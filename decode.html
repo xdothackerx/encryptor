@@ -1,0 +1,48 @@
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Secret Sauce.</title>
+  </head>
+  <body>
+    <h1>Message Decoder</h1>
+    <p>Put the encoded URL you recieved here. Supply its password when prompted and you will recieve the decoded message.</p>
+    <textarea id="message" name="message" rows="6" cols="60"></textarea>
+    <br>
+    <button id="encrypt" onclick="encoder.unlock();">Decode</button>
+
+    <script src="http://crypto-js.googlecode.com/svn/tags/3.1.2/build/rollups/aes.js"></script>
+
+    <script>
+      var encoder = {
+        setUrl: function() {
+          raw = document.getElementsByTagName("textarea")[0].value;
+          slash = raw.lastIndexOf("/")
+          this.url = raw.slice(slash+1)
+          console.log(this.url)
+        },
+        getPassword: function() {
+          this.password = prompt("Password:");
+
+        },
+        setMessage: function() {
+          this.message = this.decrypt();
+
+        },
+        replaceUrlWithMessage: function () {
+          document.getElementsByTagName("textarea")[0].value = this.message;
+        },
+        decrypt: function() {
+          console.log("Verified: " +
+            CryptoJS.AES.decrypt(this.url, this.password).toString(CryptoJS.enc.Utf8))
+          return CryptoJS.AES.decrypt(this.url, this.password).toString(CryptoJS.enc.Utf8)
+        },
+        unlock: function() {
+          this.setUrl()
+          this.getPassword()
+          this.setMessage()
+          this.replaceUrlWithMessage()
+        }
+      }
+    </script>
+  </body>
+</html>
