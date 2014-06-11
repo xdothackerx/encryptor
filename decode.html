@@ -16,8 +16,7 @@
       var encoder = {
         setUrl: function() {
           raw = document.getElementsByTagName("textarea")[0].value;
-          slash = raw.lastIndexOf("/")
-          this.url = raw.slice(slash+1)
+          this.url = raw.slice(27)
           console.log(this.url)
         },
         getPassword: function() {
