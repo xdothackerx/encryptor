@@ -5,27 +5,26 @@
   </head>
   <body>
     <h1>Message Decoder</h1>
-    <p>Put the encoded URL you recieved here. Supply its password when prompted and you will recieve the decoded message.</p>
+    <p>Put the encoded message you recieved here. Supply its password when prompted and you will recieve the decoded message.</p>
     <textarea id="message" name="message" rows="6" cols="60"></textarea>
     <br>
-    <button id="encrypt" onclick="encoder.unlock();">Decode</button>
-
+    <button id="decrypt">Unlock</button><br>
+    <form action="./encode.html">
+      <input type="submit" value="Encoder">
+    </form>
     <script src="http://crypto-js.googlecode.com/svn/tags/3.1.2/build/rollups/aes.js"></script>
 
     <script>
       var encoder = {
-        setUrl: function() {
-          raw = document.getElementsByTagName("textarea")[0].value;
-          this.url = raw.slice(27)
+        setEncoded: function() {
+          this.url = document.getElementsByTagName("textarea")[0].value;
           console.log(this.url)
         },
         getPassword: function() {
           this.password = prompt("Password:");
-
         },
         setMessage: function() {
           this.message = this.decrypt();
-
         },
         replaceUrlWithMessage: function () {
           document.getElementsByTagName("textarea")[0].value = this.message;
@@ -36,11 +35,17 @@
           return CryptoJS.AES.decrypt(this.url, this.password).toString(CryptoJS.enc.Utf8)
         },
         unlock: function() {
-          this.setUrl()
-          this.getPassword()
-          this.setMessage()
-          this.replaceUrlWithMessage()
+          encoder.setEncoded()
+          encoder.getPassword()
+          encoder.setMessage()
+          encoder.replaceUrlWithMessage()
         }
+      }
+      var unlockButton = document.getElementById("decrypt");
+      if(unlockButton.addEventListener) {
+        unlockButton.addEventListener("click", encoder.unlock, false);
+      } else if(unlockButton.attachEvent){
+        unlockButton.attachEvent("onclick", encoder.unlock);
       }
     </script>
   </body>
