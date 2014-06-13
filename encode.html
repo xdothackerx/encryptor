@@ -6,14 +6,13 @@
   <body>
     <h1>Message Encoder</h1>
     <p>This simple page lets you securely encrypt a message with a password. Your message will not leave your computer, and will not be sent over the Internet.</p>
-    <p>Once it's encoded, you'll be able to share your message with anyone else who has the password.</p>
+    <p>Once it's encoded, you'll be able to share your message with anyone else who has the password by giving them the url generated below.</p>
     <textarea id="message" name="message" rows="6" cols="60"></textarea>
     <br>
     <button id="encrypt">Lock Down</button><br>
     <form action="./decode.html">
       <input type="submit" value="Decoder">
     </form>
-
     <script src="http://crypto-js.googlecode.com/svn/tags/3.1.2/build/rollups/aes.js"></script>
 
     <script>
@@ -23,23 +22,28 @@
         },
         getPassword: function() {
           this.password = prompt("Create a passphrase:", "password");
-
         },
-        replaceMessageWithEncoded: function () {
-          encrypted_message = this.encrypt();
-          document.getElementsByTagName("textarea")[0].value = encrypted_message;
+        setUrl: function() {
+          var encrypted_message = this.encrypt();
+          var loc = document.location.href;
+          var path = loc.substr(0, loc.indexOf("/encode.html"));
+          this.url = path + "/decode.html?" + encrypted_message;
+        },
+        replaceMessageWithUrl: function () {
+          document.getElementsByTagName("textarea")[0].value = this.url;
         },
         encrypt: function() {
-          cypher = CryptoJS.AES.encrypt(this.message, this.password)
+          var cypher = CryptoJS.AES.encrypt(this.message, this.password);
           console.log("Verified: " +
-            CryptoJS.AES.decrypt(cypher, this.password).toString(CryptoJS.enc.Utf8))
-          return cypher
+            CryptoJS.AES.decrypt(cypher, this.password).toString(CryptoJS.enc.Utf8));
+          return cypher;
         },
         protect: function() {
-          encoder.setMessage()
-          encoder.getPassword()
-          encoder.replaceMessageWithEncoded()
-        }
+          encoder.setMessage();
+          encoder.getPassword();
+          encoder.setUrl();
+          encoder.replaceMessageWithUrl();
+        },
       }
 
       var lockButton = document.getElementById("encrypt");
